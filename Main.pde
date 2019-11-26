@@ -1,5 +1,5 @@
-int n = 20; // Størrelsen af grafen, n = antallet af byer
-
+int n = 10; // Størrelsen af grafen, n = antallet af byer
+ 
 PVector[] knuder = new PVector[n]; // Init - for vektorvariabel som array af n's størrelse.
 PVector[] knuderbest = new PVector[n];
 double a = 0;
@@ -12,7 +12,8 @@ float t = 0;
 boolean p = true;
 boolean o = true;
 boolean reset = true;
-
+double startdistance = 0;
+ 
 void setup() {
   size(1000, 600);
   fact = n*n*(n/2);
@@ -23,15 +24,15 @@ void setup() {
   arrayCopy(knuder, 0, knuderbest, 0, knuder.length);
   println("n =", n);
   println("suppression value of n = ", fact);
-} 
+}
 // ----####----####----####----
-
+ 
 void draw() {
   frameRate(frame);
   if (p == true) {
-    //Tegner cirkler ved hvert af punkterne 
+    //Tegner cirkler ved hvert af punkterne
     background(30);
-
+ 
     // Tegner linjer imellem punkterne
     for (int i = 0; i<(knuderbest.length); i++) {
       if (o == true) {
@@ -58,11 +59,11 @@ void draw() {
         fill(100, 100, 100, 10);
         line(knuder[i].x, knuder[i].y, knuder[i+1].x, knuder[i+1].y);
       }
-
+ 
       // Udregner distancen mellem punkterne
     }
     for (int i = 0; i<n; i++) {
-
+ 
       if (i == 0) {
         fill(0, 255, 0);
         stroke(0, 215, 0);
@@ -102,10 +103,14 @@ void draw() {
             displayBest = (int) bestEver;
             arrayCopy(knuder, 0, knuderbest, 0, knuder.length);
           }
+          if (t == 0) {
+            startdistance = dist;
+          }
+            
         }
       }
-
-
+ 
+ 
       fill(200);
       text("korteste distance = "+displayBest, 15, 15);
       text("FPS: "+frame, 15, 30);
@@ -118,19 +123,21 @@ void draw() {
       rect(15, 60, (float)(completeness)*160, 20);
       stroke(0, 215, 0);
       noFill();
-      rect(15, 60, 160, 20); 
+      rect(15, 60, 160, 20);
       text((int)(completeness*100)+ "%", 90, 93);
       text("Muligheder at undersøge: " + fact, 400, 15);
       text("Muligheder undersøgt: "+ t, 400, 30);
       text("ENTER = Pause/unPause, BACKSPACE = Vis Beste Rute, TAB = Ny Graf", 10, height-5);
+      text("Start-Distance: " + (int)startdistance, 15, 110);
+      text("%-vis optimeret: " + (int)(-(bestEver/startdistance)*100+100) + "%", 15, 125);
       //Viser den bedste distance på skærmen
-
-
+     
+ 
       int i = floor(random(knuder.length));
-      int j = i;
+      int j = floor(random(knuder.length-2));
       if (i < knuder.length-1)
         j = i+1;
-
+ 
       swap(knuder, i, j);
       if (t == fact) p = !p;
       if (reset == true) p = !p;
@@ -139,8 +146,8 @@ void draw() {
   }
 }
 void keyPressed () {
-  if (frame < 240) { 
-    if (keyCode == RIGHT) { 
+  if (frame < 240) {
+    if (keyCode == RIGHT) {
       frame += 1;
     }
   }
@@ -169,10 +176,13 @@ void keyPressed () {
     fact = n*n*(n/2);
     o = true;
     reset = true;
+    for (int i = 0; i<1; i++) {
+      p = !p;
+    }
   }
 }
-
-
+ 
+ 
 void swap(PVector[] a, int i, int j) {
   PVector temp = a[i];
   a[i] = a[j];
