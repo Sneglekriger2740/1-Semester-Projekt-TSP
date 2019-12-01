@@ -1,20 +1,20 @@
-int n = 100; // Størrelsen af grafen, n = antallet af byer
+int n = 250; // Størrelsen af grafen, n = antallet af byer
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Vector;
 
 PVector[] knuder = new PVector[n]; // Init - for vektorvariabel som array af n's størrelse.
-PVector[] knuderbest = new PVector[n];
-PVector[] m = new PVector[n];
-PVector[] l = new PVector[n];
-PVector[] r = new PVector[n];
+PVector[] knuderbest = new PVector[n]; // Visualiserings array, til at displaye den korteste eulertur.
+PVector[] m = new PVector[n]; // 2-opt Algoritmens middel array-del.
+PVector[] l = new PVector[n]; // 2-opt Algoritmens venstre array-del.
+PVector[] r = new PVector[n]; // 2-opt Algoritmens højre array-del.
 double a = 0;
 double bestEver = 10000000000000000000000000000000000000.1;
 boolean b = true;
 int displayBest = 0;
 int frame = 0;
 int buf = frame;
-int framerate = 20;
+int framerate = 240;
 float fact = 1;
 float t = 0;
 boolean o = true;
@@ -33,7 +33,6 @@ void setup() {
   }
   arrayCopy(knuder, 0, knuderbest, 0, knuder.length);
   println("n =", n);
-  println("suppression value of n = ", fact);
   System.out.println(Arrays.toString(knuder));
 }
 // ----####----####----####----
@@ -41,60 +40,11 @@ void setup() {
 void draw() {
   frameRate(framerate);
   //Tegner cirkler ved hvert af punkterne
-  background(230);
+  background(55);
   // Tegner linjer imellem punkterne
 
-  for (int i = 0; i<(knuderbest.length); i++) {
-    if (o == true) {
-      if (i == (knuderbest.length)-1) {
-        stroke(100);
-        strokeWeight(5);
-        fill(100, 100, 100, 10);
-        line(knuderbest[i].x, knuderbest[i].y, knuderbest[0].x, knuderbest[0].y);
-      } else {
-        stroke(100);
-        strokeWeight(5);
-        fill(100, 100, 100, 10);
-        line(knuderbest[i].x, knuderbest[i].y, knuderbest[i+1].x, knuderbest[i+1].y);
-      }
-    }
-    if (i == (knuder.length)-1) {
-      stroke(0);
-      strokeWeight(1);
-      fill(100, 100, 100, 10);
-      line(knuder[i].x, knuder[i].y, knuder[0].x, knuder[0].y);
-    } else {
-      stroke(0);
-      strokeWeight(1);
-      fill(100, 100, 100, 10);
-      line(knuder[i].x, knuder[i].y, knuder[i+1].x, knuder[i+1].y);
-    }
 
-    // Udregner distancen mellem punkterne
-  }
-  for (int i = 0; i<n; i++) {
 
-    if (i == 0) {
-      fill(0, 255, 0);
-      stroke(0, 215, 0);
-      strokeWeight(2);
-      ellipse(knuderbest[0].x, knuderbest[0].y, 8, 8);
-    } else {
-      fill(255, 155, 0);
-      stroke(245, 135, 0);
-      strokeWeight(2);
-      ellipse(knuderbest[i].x, knuderbest[i].y, 8, 8);
-    }
-
-    //Laver numrer i hver af punkterne
-    /*if (i>9) {
-     fill(0);
-     text(""+(i+1), knuderbest[i].x-7, knuderbest[i].y+5);
-     } else {
-     fill(0);
-     text(""+(i+1), knuderbest[i].x-3, knuderbest[i].y+5);
-     }*/
-  }
   if (b == true) {
     double dist = 0;
     double sum = 0;
@@ -120,12 +70,9 @@ void draw() {
         }
       }
     }
-
-
-
     //Viser den bedste distance på skærmen
 
-    int buf2 = k; // Kludge.
+    int buf2 = k;
   top:
     {
       for (int i = k; i<n; i++) {
@@ -144,7 +91,7 @@ void draw() {
             System.arraycopy(r, 0, knuder, l.length+m.length, r.length);
             System.out.println(Arrays.toString(knuder));
             frame++;
-            k = i; // Cycling through all previous edges is probably for naught, so I scan only unchecked edges.
+            k = i; // Scanner kun ucheckede kanter.
             b = true;
             break top;
           }
@@ -158,25 +105,88 @@ void draw() {
       b = false;
     }
   }
-  fill(200);
+  for (int i = 0; i<(knuderbest.length); i++) {
+    if (o == true) {
+      if (i == (knuderbest.length)-1) {
+        if (b == true) {
+          stroke(120);
+        } else {
+          stroke(0, 170, 0);
+        }
+        strokeWeight(5);
+        fill(100, 100, 100, 10);
+        line(knuderbest[i].x, knuderbest[i].y, knuderbest[0].x, knuderbest[0].y);
+      } else {
+        if (b == true) {
+          stroke(120);
+        } else {
+          stroke(0, 170, 0);
+        }
+        strokeWeight(5);
+        fill(100, 100, 100, 10);
+        line(knuderbest[i].x, knuderbest[i].y, knuderbest[i+1].x, knuderbest[i+1].y);
+      }
+    }
+    if (i == (knuder.length)-1) {
+      if (b == true) {
+        stroke(0);
+      } else {
+        stroke(0, 150, 0);
+      }
+      strokeWeight(1);
+      fill(100, 100, 100, 10);
+      line(knuder[i].x, knuder[i].y, knuder[0].x, knuder[0].y);
+    } else {
+      if (b == true) {
+        stroke(0);
+      } else {
+        stroke(0, 150, 0);
+      }
+      strokeWeight(1);
+      fill(100, 100, 100, 10);
+      line(knuder[i].x, knuder[i].y, knuder[i+1].x, knuder[i+1].y);
+    }
+  }
+  for (int i = 0; i<n; i++) {
+    if (o == true) {
+      if (b == false) {
+        fill(0, 255, 0);
+        stroke(0, 215, 0);
+        strokeWeight(2);
+        ellipse(knuderbest[i].x, knuderbest[i].y, 6, 6);
+      } else {
+        fill(255, 155, 0);
+        stroke(245, 135, 0);
+        strokeWeight(2);
+        ellipse(knuderbest[i].x, knuderbest[i].y, 6, 6);
+      }
+    }
+    //Laver numrer i hver af punkterne
+    /*if (i>9) {
+     fill(0);
+     text(""+(i+1), knuderbest[i].x-7, knuderbest[i].y+5);
+     } else {
+     fill(0);
+     text(""+(i+1), knuderbest[i].x-3, knuderbest[i].y+5);
+     }*/
+  }
+  stroke(150);
+  strokeWeight(1);
+  fill(60);
+  rect(-5, -5, 180, 100);
+  fill(255);
   text("korteste distance = "+displayBest, 15, 15);
   text("FPS: "+framerate, 15, 30);
-  fill(0, 255, 0);
+  fill(0, 150, 0);
   text("Ping: " +(int)random(15, 90), 15, 45);
-  float completeness = 0;
   strokeWeight(2);
-  noStroke();
   fill(255);
-  rect(15, 60, (float)(completeness)*160, 20);
-  stroke(0, 215, 0);
-  noFill();
-  rect(15, 60, 160, 20);
-  text((int)(completeness*100)+ "%", 90, 93);
-  text("Muligheder at undersøge: " + fact, 400, 15);
-  text("Muligheder undersøgt: "+ t, 400, 30);
-  text("ENTER = Pause/unPause, BACKSPACE = Vis Beste Rute, TAB = Ny Graf", 10, height-5);
-  text("Start-Distance: " + (int)startdistance, 15, 110);
-  text("%-vis optimeret: " + (int)(-(bestEver/startdistance)*100+100) + "%", 15, 125);
+  text("2-Opt Algoritme", 10, height-5);
+  text("Start-Distance: " + (int)startdistance, 15, 60);
+  if (b == true)
+    text("Arbejder..  " + (int)(-(bestEver/startdistance)*100+100) + "%", 15, 75);
+  if (b == false)
+    text("Færdig. " + (int)100 + "%", 15, 75);
 }
 
 void keyPressed () {
@@ -208,23 +218,15 @@ void keyPressed () {
     }
     arrayCopy(knuder, 0, knuderbest, 0, knuder.length);
     fact = n*n*(n/2);
-    o = true;
     reset = true;
     for (int i = 0; i<1; i++) {
       p = !p;
     }
     oneshot = true;
     k = 0;
-    loop();
+    redraw();
+    b = true;
   }
-}
-
-
-void swap(PVector[] a, int l, int j) {
-  PVector temp = a[l];
-  a[l] = a[j];
-  a[j] = temp;
-  b = true;
 }
 
 void invertUsingFor(Object[] array) {
