@@ -12,11 +12,12 @@ PVector[] r = new PVector[n]; // 2-opt Algoritmens højre array-del.
 double a = 0;
 double bestEver = 10000000000000000000000000000000000000.1;
 boolean b = true;
+boolean bOneshot = true;
 
 int displayBest = 0;
 int frame = 0;
 int buf = frame;
-int framerate = 2;
+int framerate = 20;
 int[] order;
 
 float fact = 1;
@@ -25,7 +26,7 @@ boolean o = true;
 boolean reset = true;
 double startdistance = 0;
 int k = 0;
-boolean oneshot = true;
+boolean nyGraf = true;
 boolean p = true;
 
 void setup() {
@@ -47,32 +48,7 @@ void draw() {
   frameRate(framerate);
   background(55);
 
-  if (b == true) {
-    double dist = 0;
-    double sum = 0;
-    for (int i = 0; i <knuder.length; i++) {
-      if (i == knuder.length - 1) {
-        a = knuder[i].dist(knuder[0]);
-        sum = sum + a;
-      } else {
-        a = knuder[i].dist(knuder[i+1]);
-        sum = sum + a;
-      }
-      if (i == (knuder.length - 1)) {
-        b = false;
-        dist = dist+sum;
-        if (dist<bestEver) {
-          bestEver = dist;
-          displayBest = (int) bestEver;
-          arrayCopy(knuder, 0, knuderbest, 0, knuder.length);
-        }
-        if (oneshot == true) {
-          startdistance = dist;
-          oneshot = false;
-        }
-      }
-    }
-  }
+
 
 
   // BRUTE FORCE 
@@ -100,10 +76,9 @@ void draw() {
         line(knuderbest[i].x, knuderbest[i].y, knuderbest[i+1].x, knuderbest[i+1].y);
       }
     }
-    
-    int e = order[i];
-    println(knuder[e]);
-    
+
+    println(order);
+
     if (i == knuder.length-1) {
       if (b == true) {
         stroke(0);
@@ -112,18 +87,17 @@ void draw() {
       } 
       strokeWeight(1);
       fill(100, 100, 100, 10);
-      line(knuder[e].x, knuder[e].y, knuder[0].x, knuder[0].y);
-    } else if (i < knuder.length-1){
+      line(knuder[i].x, knuder[i].y, knuder[0].x, knuder[0].y);
+    } else if (i < knuder.length-1) {
       if (b == true) {
         stroke(0);
       } else {
         stroke(0, 150, 0);
       }
-      int g = order[i+1];
       strokeWeight(1);
       //println(""+e);
       fill(100, 100, 100, 10);
-      line(knuder[e].x, knuder[e].y, knuder[g].x, knuder[g].y);
+      line(knuder[i].x, knuder[i].y, knuder[i+1].x, knuder[i+1].y);
     }
   }
   for (int i = 0; i<n; i++) {
@@ -149,7 +123,38 @@ void draw() {
      text(""+(i+1), knuderbest[i].x-3, knuderbest[i].y+5);
      }*/
   }
-  bruteForce();
+  //if (t > 120) delay(1000000000);
+  if (b == true) {
+    bruteForce();
+  
+    double dist = 0;
+    double sum = 0;
+
+    System.out.println(Arrays.toString(knuder));
+    for (int i = 0; i <knuder.length; i++) {
+      if (i == knuder.length - 1) {
+        a = knuder[i].dist(knuder[0]);
+        sum = sum + a;
+      } else {
+        a = knuder[i].dist(knuder[i+1]);
+        sum = sum + a;
+      }
+
+      if (i == (knuder.length - 1)) {
+        dist = dist+sum;
+        if (dist<bestEver) {
+          bestEver = dist;
+          displayBest = (int) bestEver;
+          arrayCopy(knuder, 0, knuderbest, 0, knuder.length);
+        }
+        if (nyGraf == true) {
+          startdistance = dist;
+          nyGraf = false;
+        }
+      }
+    }
+  }
+  
   stroke(150);
   strokeWeight(1);
   fill(60);
@@ -161,13 +166,16 @@ void draw() {
   text("Ping: " +(int)random(15, 90), 15, 45);
   strokeWeight(2);
   fill(255);
-  text("Brutal Kraft", 10, height-5);
+  text("Lexografical Brute", 10, height-5);
   text("Start-Distance: " + (int)startdistance, 15, 60);
   if (b == true)
     text("Arbejder..  " + (int)(-(bestEver/startdistance)*100+100) + "%", 15, 75);
   if (b == false)
     text("Færdig. " + (int)100 + "%", 15, 75);
   println(t);
+  if (bOneshot == true) {
+    bOneshot = !bOneshot;
+  }
 }
 
 void keyPressed () {
@@ -182,9 +190,9 @@ void keyPressed () {
     }
   }
   if (key == ENTER) {
-    p = !p;
-    reset = false;
+    delay(1000000000);
   }
+
   if (key == BACKSPACE) {
     o = !o;
   }
@@ -204,7 +212,7 @@ void keyPressed () {
     for (int i = 0; i<1; i++) {
       p = !p;
     }
-    oneshot = true;
+    nyGraf = true;
     k = 0;
     redraw();
     b = true;
@@ -221,7 +229,6 @@ void invertUsingFor(Object[] array) {
 
 void bruteForce() {
   t++;
-
   // STEP 1 of the algorithm
   // https://www.quora.com/How-would-you-explain-an-algorithm-that-generates-permutations-using-lexicographic-ordering
   int largestI = -1;
@@ -232,8 +239,8 @@ void bruteForce() {
   }
 
   if (largestI == -1) {
-    noLoop();
     println("finished & LargestI =" + largestI);
+    b = false;
   }
 
   if (largestI != -1) {
@@ -253,6 +260,14 @@ void bruteForce() {
     arrayCopy(order, largestI + 1, endArray, 0, size);
     endArray = reverse(endArray);
     arrayCopy(endArray, 0, order, largestI+1, size);
+    PVector temp2[] = new PVector[knuder.length]; 
+    
+    for (int i=0; i<knuder.length; i++) {
+      temp2[order[i]] = knuder[i];
+    }
+    for (int i=0; i<knuder.length; i++) {
+      knuder[i] = temp2[i];
+    }
   }
 }
 
@@ -264,9 +279,19 @@ int factorial(int n) {
   }
 }
 
-
 void swap(int[] a, int i, int j) {
   int temp = a[i];
   a[i] = a[j];
   a[j] = temp;
 }
+
+void reorder() { 
+  PVector temp[] = new PVector[knuder.length]; 
+
+  // arr[i] should be present at index[i] index 
+  for (int i=0; i<knuder.length-1; i++) 
+    knuder[order[i]] = temp[i]; 
+
+  // Copy temp[] to arr[] 
+  knuder = temp;
+} 
