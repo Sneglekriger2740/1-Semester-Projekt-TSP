@@ -313,6 +313,8 @@ void draw() {
   }
   if (b == false) {
     text("Tid-Sparret: " + (100-((t2/fact)*100)) +"%", 15, 135);
+    text("Brute-force steps: " + t,15, 180);
+    text("2-Opt steps: " + t2, 15, 195);
     if (displayBest < displayBest2)
       text("Fejl-Margen: " + (int)((displayBest2/displayBest)*100-100) + "%", 15, 150);
   }
