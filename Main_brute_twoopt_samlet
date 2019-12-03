@@ -217,7 +217,6 @@ void draw() {
         }
         if (nyGraf == true) {
           startdistance = dist;
-          nyGraf = false;
         }
       }
     }
@@ -241,9 +240,9 @@ void draw() {
           displayBest2 = (int) bestEver2;
           arrayCopy(knuder2, 0, knuderbest2, 0, knuder2.length);
         }
-        if (oneshot2 == true) {
-          startdistance2 = dist2;
-          oneshot2 = false;
+        if (nyGraf == true) {
+          startdistance2 = startdistance;
+          nyGraf = false;
         }
       }
     }
@@ -316,7 +315,7 @@ void draw() {
     text("Brute-force steps: " + t,15, 180);
     text("2-Opt steps: " + t2, 15, 195);
     if (displayBest < displayBest2)
-      text("Fejl-Margen: " + (int)((displayBest2/displayBest)*100-100) + "%", 15, 150);
+      text("Fejl-Margen: " + (float)((displayBest2/displayBest)*100-100) + "%", 15, 150);
   }
 }
 
