@@ -293,11 +293,11 @@ void draw() {
   fill(60);
   rect(-1, 0, 160, height);
   fill(255);
-  text("kortest dist: Brute = "+(int)displayBest, 15, 15);
+  text("Start-dist: Brute = " +(int)startdistance, 15, 15);
   text("FPS: "+framerate, 15, 165);
   strokeWeight(2);
-  text("Lexografical Brute + 2-opt", 10, height-5);
-  text("Start-Dist: Brute =" + (int)startdistance, 15, 30);
+  text("Leksiografisk Brute + 2-opt", 10, height-5);
+  text("Kortest-Dist: Brute =" + (int)displayBest, 15, 30);
   if (b == true)
     text("Arbejder..  " + (int)((t/fact)*100) + "%", 15, 105);
   if (b == false)
