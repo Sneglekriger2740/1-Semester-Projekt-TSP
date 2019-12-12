@@ -297,7 +297,7 @@ void draw() {
   text("FPS: "+framerate, 15, 165);
   strokeWeight(2);
   text("Leksiografisk Brute + 2-opt", 10, height-5);
-  text("Start-Dist: Brute =" + (int)startdistance, 15, 15);
+  text("Start-Dist: Brute =" + (int)startdistance, 15, 16);
   if (b == true)
     text("Arbejder..  " + (int)((t/fact)*100) + "%", 15, 105);
   if (b == false)
